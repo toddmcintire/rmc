@@ -1,5 +1,5 @@
 use clap::{Arg, Command};
-use std::fs;
+use std::{fs, path::PathBuf};
 
 fn main() {
     let matches = Command::new("rmc")
@@ -55,7 +55,7 @@ fn main() {
             Err(err) => println!("Error: {}", err),
         }
     } else if choice == "r" {
-        recursive_folder_copy(input);
+        recursive_folder_check(input);
     }else {
         panic!("incorrect choice aborting")
     }
@@ -64,9 +64,23 @@ fn main() {
 }
 
 
-fn recursive_folder_copy (input: &String) {
-    let entries = fs::read_dir(input);
-    for element in entries {
-        println!("{:?}",element);
+fn recursive_folder_check (input: &String) -> std::io::Result<()>{
+    for element in  fs::read_dir(input)? {
+        let dir = element?;
+        let meta = fs::metadata(dir.path())?;
+        let file_type = meta.file_type();
+        let path_buf = PathBuf::from(dir.path());
+        let path_str = path_buf.to_str().unwrap();
+        let path_string = String::from(path_str);
+        println!("path: {:?} & type: {:?}",dir.path(),file_type.is_dir());
+        if file_type.is_dir() {
+            recursive_folder_check(&path_string);
+        } else if  file_type.is_file(){
+            println!("{} is a file", path_str);
+        } else {
+            println!("unknown file type");
+        }
+        
     }
+    Ok(())
 }
