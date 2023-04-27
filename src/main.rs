@@ -54,9 +54,19 @@ fn main() {
             Ok(()) => println!("original deleted"),
             Err(err) => println!("Error: {}", err),
         }
-    } else {
+    } else if choice == "r" {
+        recursive_folder_copy(input);
+    }else {
         panic!("incorrect choice aborting")
     }
 
     
+}
+
+
+fn recursive_folder_copy (input: &String) {
+    let entries = fs::read_dir(input);
+    for element in entries {
+        println!("{:?}",element);
+    }
 }
