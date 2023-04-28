@@ -40,20 +40,9 @@ fn main() {
     );
 
     if choice == "c" {
-        match fs::copy(input,output) {
-            Ok(bytes) => println!("{} bytes copied", bytes),
-            Err(err) => println!("Error: {}", err),
-        }
+        copy_file(input, output);
     } else if choice == "m" {
-        //copy file like above then delete file with fs::remove_file()
-        match fs::copy(input,output) {
-            Ok(bytes) => println!("{} bytes copied", bytes),
-            Err(err) => println!("Error: {}", err),
-        }
-        match fs::remove_file(input) {
-            Ok(()) => println!("original deleted"),
-            Err(err) => println!("Error: {}", err),
-        }
+        move_file(input, output);
     } else if choice == "r" {
         recursive_folder_check(input);
     }else {
@@ -83,4 +72,34 @@ fn recursive_folder_check (input: &String) -> std::io::Result<()>{
         
     }
     Ok(())
+}
+/// copies a file from one location to another
+/// 
+/// # Arguments
+/// 
+/// * `input` - input path to file
+/// * `output` - output path for desired file
+/// 
+/// # Examples
+/// 
+/// ```
+/// copy_file("file.txt","copy.txt");
+/// ```
+fn copy_file(input: &String, output: &String) {
+    match fs::copy(input, output) {
+        Ok(bytes) => println!("{} bytes copied", bytes),
+            Err(err) => println!("Error: {}", err),
+    }
+}
+
+fn move_file(input: &String, output: &String) {
+    //copy file like above then delete file with fs::remove_file()
+    match fs::copy(input, output) {
+        Ok(bytes) => println!("{} bytes copied", bytes),
+            Err(err) => println!("Error: {}", err),
+    }
+    match fs::remove_file(input) {
+        Ok(()) => println!("original deleted"),
+        Err(err) => println!("Error: {}", err),
+    }
 }
