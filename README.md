@@ -1,6 +1,6 @@
-# rmc
+# rmc(rust move copy)
 
-rmc is a rust program to move and copy files. rmc is not designed to be used in production or any meaningful use but rather a learning project on creating cli tools.
+rmc(rust move copy) is a rust program to move and copy files. rmc is not designed to be used in production or any meaningful use but rather a learning project on creating cli tools.
 
 ## Install
 
