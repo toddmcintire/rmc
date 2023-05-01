@@ -1,5 +1,5 @@
 use clap::{Arg, Command};
-use std::{fs::{self, create_dir_all}, path::PathBuf};
+use std::{fs::{self, create_dir, FileType, OpenOptions}, path::PathBuf, process};
 
 fn main() {
     let matches = Command::new("rmc")
@@ -44,9 +44,17 @@ fn main() {
     } else if choice == "m" || choice == "move"{
         move_file(input, output);
     } else if choice == "r" {
-        recursive_folder_check(input);
+        let result = recursive_folder_check(input);
+            if let Err(error) = result {
+                eprintln!("Error: {}", error);
+            }
     }else if choice == "rc" {
-        recursive_copy(input, output);
+        //list_files_in_dir(output);
+        // let result = recursive_copy(input,output);
+        //     if let Err(error) = result {
+        //         eprintln!("Error: {}", error);
+        //     }
+        println!("{}",does_folder_exist(output));
     }else {
         panic!("incorrect choice aborting")
     }
@@ -99,6 +107,7 @@ fn recursive_folder_check (input: &String) -> std::io::Result<()>{
 /// recursive_copy("folder/file.txt","another_folder/");
 /// ```
 fn recursive_copy(input: &String, output: &String) -> std::io::Result<()>{
+    list_files_in_dir(output);
     for element in fs::read_dir(input)?  {
         let dir = element?;
         let meta = fs::metadata(dir.path())?;
@@ -110,7 +119,7 @@ fn recursive_copy(input: &String, output: &String) -> std::io::Result<()>{
         if file_type.is_dir() {
             let appended = format!("{}/{}",output,path_str);
             println!("{}",appended);
-            create_dir_all(appended)?;
+            create_dir(appended)?;
             recursive_copy(&path_string, output)?;
         } else if  file_type.is_file(){
             let appended = format!("{}/{}",output,path_str);
@@ -168,4 +177,49 @@ fn move_file(input: &String, output: &String) {
         Ok(()) => println!("original deleted"),
         Err(err) => println!("Error: {}", err),
     }
+}
+
+//function currently used to see if anything is in the output folder, if not then create it.
+fn list_files_in_dir(dir_path: &String) {
+    //creates the folder
+    fn my_create_dir(input: &String) -> std::io::Result<()> {
+        fs::create_dir(input)?;
+        Ok(())
+    }
+
+    if let Ok(entries) = fs::read_dir(dir_path) {
+        for item in entries {
+            if let Ok(item) = item {
+                if let Some(file_name) = item.file_name().to_str() {
+                    println!("{}",file_name);
+                    
+                }
+                
+                if let Ok(meta) = fs::metadata(item.path()) {
+                    println!("file? {:?} -- folder? {:?}",meta.is_file(), meta.is_dir());
+                }
+
+                if let Ok(meta) = fs::metadata(item.path()) {
+                    let file_type = meta.file_type();
+                    println!("file type: {:?}", file_type);
+                    if file_type.is_dir() == false && file_type.is_file() == false && file_type.is_symlink() == false {
+                        println!("what im looking for");
+                    }
+                }
+            }
+        }
+    } else {
+        println!("output directory does not exist creating");
+        my_create_dir(dir_path);
+    }
+}
+
+/// This function returns a bool if the given input string is found or if there is an err.
+fn does_folder_exist(input: &String) -> bool{
+    let file = OpenOptions::new().read(true).open(input);
+    println!("{:?}",file);
+    if let Err(..) = file {
+        return false
+    }
+    true
 }
