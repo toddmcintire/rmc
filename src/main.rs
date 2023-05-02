@@ -1,5 +1,5 @@
 use clap::{Arg, Command};
-use std::{fs::{self, create_dir, FileType, OpenOptions}, path::PathBuf, process};
+use std::{fs::{self, create_dir, FileType, OpenOptions}, path::PathBuf, process, fmt::format, collections::HashSet};
 
 fn main() {
     let matches = Command::new("rmc")
@@ -49,12 +49,11 @@ fn main() {
                 eprintln!("Error: {}", error);
             }
     }else if choice == "rc" {
-        //list_files_in_dir(output);
         // let result = recursive_copy(input,output);
-        //     if let Err(error) = result {
-        //         eprintln!("Error: {}", error);
-        //     }
-        println!("{}",does_folder_exist(output));
+        // if let Err(error) = result {
+        //     eprintln!("Error: {}", error);
+        // }
+        test_recursive_copy(input, output);
     }else {
         panic!("incorrect choice aborting")
     }
@@ -107,7 +106,6 @@ fn recursive_folder_check (input: &String) -> std::io::Result<()>{
 /// recursive_copy("folder/file.txt","another_folder/");
 /// ```
 fn recursive_copy(input: &String, output: &String) -> std::io::Result<()>{
-    list_files_in_dir(output);
     for element in fs::read_dir(input)?  {
         let dir = element?;
         let meta = fs::metadata(dir.path())?;
@@ -179,47 +177,83 @@ fn move_file(input: &String, output: &String) {
     }
 }
 
-//function currently used to see if anything is in the output folder, if not then create it.
-fn list_files_in_dir(dir_path: &String) {
-    //creates the folder
-    fn my_create_dir(input: &String) -> std::io::Result<()> {
-        fs::create_dir(input)?;
-        Ok(())
-    }
+// //function currently used to see if anything is in the output folder, if not then create it.
+// fn list_files_in_dir(dir_path: &String) {
+    
+//     if let Ok(entries) = fs::read_dir(dir_path) {
+//         for res in entries {
+//             if let Ok(item) = res {
+//                 println!("{:?}", item.path());
+//                 println!("{:?}",does_folder_exist(item.path().to_str().unwrap()));
+//             }
+//         }
+//     } else {
+//         println!("output directory does not exist creating");
+//         my_create_dir(dir_path);
+//         list_files_in_dir(dir_path);
+//     }
+// }
 
-    if let Ok(entries) = fs::read_dir(dir_path) {
-        for item in entries {
-            if let Ok(item) = item {
-                if let Some(file_name) = item.file_name().to_str() {
-                    println!("{}",file_name);
-                    
-                }
-                
-                if let Ok(meta) = fs::metadata(item.path()) {
-                    println!("file? {:?} -- folder? {:?}",meta.is_file(), meta.is_dir());
-                }
-
-                if let Ok(meta) = fs::metadata(item.path()) {
-                    let file_type = meta.file_type();
-                    println!("file type: {:?}", file_type);
-                    if file_type.is_dir() == false && file_type.is_file() == false && file_type.is_symlink() == false {
-                        println!("what im looking for");
-                    }
-                }
-            }
-        }
-    } else {
-        println!("output directory does not exist creating");
-        my_create_dir(dir_path);
+//creates the folder
+fn my_create_dir(input: &str) {
+    if let Ok(_) = fs::create_dir(input) {
+        println!("created dir");
     }
 }
 
 /// This function returns a bool if the given input string is found or if there is an err.
-fn does_folder_exist(input: &String) -> bool{
+fn does_folder_exist(input: &str) -> bool{
     let file = OpenOptions::new().read(true).open(input);
     println!("{:?}",file);
     if let Err(..) = file {
         return false
     }
     true
+}
+
+fn test_recursive_copy(input: &str, output: &str){
+    //checks if output folder exists if not creates it
+    if does_folder_exist(output) == false{
+        my_create_dir(output);
+    }
+    //prints if output exists, it should at this point.
+    println!("{}",does_folder_exist(output));
+
+    let input_path = std::path::Path::new(input);
+    let output_path = std::path::Path::new(output);
+
+    if input_path.is_dir() && output_path.is_dir() {
+        if let Ok(element) = fs::read_dir(input) {
+            for res in element {
+                if let Ok(item) = res {
+                    //println!("{:?}", item.path());
+                    if let Ok(meta) = fs::metadata(item.path()) {
+                         if meta.is_dir() {
+                            // create folder in output
+                            //println!("copy file 1{:?}", output_path.display());
+                            //println!("copy file 2{:?}",item.path().file_name().unwrap().to_str().unwrap());
+                            let copy_output = format!("{}{}/",output_path.display(), item.path().file_name().unwrap().to_str().unwrap());
+                            fs::create_dir(&copy_output);
+                            //recursively call on input folder
+                            //println!("!!! {:?}",item.path().to_str().unwrap());
+                            //println!("!!!? {:?}", &copy_output.as_str());
+                            test_recursive_copy(item.path().to_str().unwrap(), &copy_output.as_str())
+                         }
+
+                         if meta.is_file() {
+                            // add output_path + file name
+                            let copy_output = format!("{}{}",output_path.display(), item.path().file_name().unwrap().to_str().unwrap());
+
+                            //println!("copy file 1{:?}", output_path.display());
+                            //println!("copy file 2{:?}",item.path().file_name().unwrap().to_str().unwrap());
+                            // copy file 
+                            //println!("copy output {:?}", &copy_output);
+                            fs::copy(item.path(), &copy_output);
+                         }
+                    }
+                }
+            }
+        }
+
+    }
 }
