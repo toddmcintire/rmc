@@ -131,7 +131,7 @@ fn recursive_copy(input: &str, output: &str){
                             //recursively call on input folder
                             //println!("!!! {:?}",item.path().to_str().unwrap());
                             //println!("!!!? {:?}", &copy_output.as_str());
-                            test_recursive_copy(item.path().to_str().unwrap(), &copy_output.as_str())
+                            recursive_copy(item.path().to_str().unwrap(), &copy_output.as_str())
                          }
 
                          if meta.is_file() {
