@@ -177,23 +177,6 @@ fn move_file(input: &String, output: &String) {
     }
 }
 
-// //function currently used to see if anything is in the output folder, if not then create it.
-// fn list_files_in_dir(dir_path: &String) {
-    
-//     if let Ok(entries) = fs::read_dir(dir_path) {
-//         for res in entries {
-//             if let Ok(item) = res {
-//                 println!("{:?}", item.path());
-//                 println!("{:?}",does_folder_exist(item.path().to_str().unwrap()));
-//             }
-//         }
-//     } else {
-//         println!("output directory does not exist creating");
-//         my_create_dir(dir_path);
-//         list_files_in_dir(dir_path);
-//     }
-// }
-
 //creates the folder
 fn my_create_dir(input: &str) {
     if let Ok(_) = fs::create_dir(input) {
