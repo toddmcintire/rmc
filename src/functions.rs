@@ -54,12 +54,8 @@ pub fn does_folder_exist(input: &str) -> bool{
 /// ```
 /// 
 /// This function moves a file from one location to another with all the original permissions.
-pub fn move_file(input: &String, output: &String) {
-    //copy file like above then delete file with fs::remove_file()
-    match fs::copy(input, output) {
-        Ok(bytes) => println!("{} bytes copied", bytes),
-            Err(err) => println!("Error: {}", err),
-    }
+pub fn move_file(input: &str, output: &str) {
+    copy_file(input, output);
     match fs::remove_file(input) {
         Ok(()) => println!("original deleted"),
         Err(err) => println!("Error: {}", err),
