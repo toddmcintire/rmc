@@ -4,7 +4,7 @@ rmc(rust move copy) is a rust program to move and copy files. rmc is not designe
 
 ## Install
 
-To install rmc visit the Releases page and download the latest version for your OS.
+To install rmc visit the [Releases](https://github.com/toddmcintire/rmc/releases) page and download the latest version for your OS.
 
 ## Usage
 
