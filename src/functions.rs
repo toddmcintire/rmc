@@ -1,4 +1,4 @@
-use std::{fs::{self, OpenOptions}, path::PathBuf};
+use std::{fs::{self, OpenOptions, remove_dir_all}, path::PathBuf};
 
 //creates the folder
 pub fn my_create_dir(input: &str) -> std::io::Result<()>{
@@ -158,4 +158,26 @@ pub fn recursive_folder_check (input: &String) -> std::io::Result<()>{
         
     }
     Ok(())
+}
+
+/// recursively moves files and folders 
+/// 
+/// # Arguments
+/// 
+/// * `input` - input path to file
+/// * `output` - output path to file
+/// 
+/// # Examples
+/// 
+/// ```
+/// recursive_move("folder/file.txt","another_folder/");
+/// ```
+pub fn recursive_move(input: &str, output: &str){
+    //calls 
+    recursive_copy(input, output);
+    if let Ok(_) = remove_dir_all(input) {
+        println!("original removed");
+    } else {
+        eprintln!("error in removing original");
+    }
 }

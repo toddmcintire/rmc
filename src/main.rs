@@ -50,6 +50,8 @@ fn main() {
             }
     }else if choice == "rc" {
         functions::recursive_copy(input, output);
+    }else if choice == "rm" {
+        functions::recursive_move(input, output);
     }else {
         panic!("incorrect choice aborting")
     }
