@@ -1,6 +1,16 @@
 use std::{fs::{self, OpenOptions, remove_dir_all}, path::PathBuf};
 
-//creates the folder
+/// creates folder from given input string
+/// 
+/// # Arguments
+/// 
+/// * `input` - input path to file
+/// 
+/// # Examples
+/// 
+/// ```
+/// my_create_dir("test_dir");
+/// ```
 pub fn my_create_dir(input: &str) -> std::io::Result<()>{
     if input.is_empty() {
         return Err(std::io::Error::new(std::io::ErrorKind::InvalidInput, "Empty directory name"));
@@ -11,6 +21,16 @@ pub fn my_create_dir(input: &str) -> std::io::Result<()>{
 }
 
 /// This function returns a bool if the given input string is found or if there is an err.
+///
+/// # Arguments
+/// 
+/// * `input` - input path to folder
+/// 
+/// # Examples
+/// 
+/// ```
+/// does_folder_exist("test_dir");
+/// ```
 pub fn does_folder_exist(input: &str) -> bool{
     let file = OpenOptions::new().read(true).open(input);
     //println!("{:?}",file);
@@ -126,38 +146,6 @@ pub fn recursive_copy(input: &str, output: &str){
         }
 
     }
-}
-
-/// recursively checks if input is folder or file
-/// 
-/// # Arguments
-/// 
-/// * `input` - input path to file
-/// 
-/// # Examples
-/// 
-/// ```
-/// recursive_folder_check("file.txt");
-/// ```
-pub fn recursive_folder_check (input: &String) -> std::io::Result<()>{
-    for element in  fs::read_dir(input)? {
-        let dir = element?;
-        let meta = fs::metadata(dir.path())?;
-        let file_type = meta.file_type();
-        let path_buf = PathBuf::from(dir.path());
-        let path_str = path_buf.to_str().unwrap();
-        let path_string = String::from(path_str);
-        println!("path: {:?} & is dir: {:?}",dir.path(),file_type.is_dir());
-        if file_type.is_dir() {
-            recursive_folder_check(&path_string)?;
-        } else if  file_type.is_file(){
-            println!("{} is a file", path_str);
-        } else {
-            println!("unknown file type");
-        }
-        
-    }
-    Ok(())
 }
 
 /// recursively moves files and folders 

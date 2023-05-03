@@ -43,11 +43,6 @@ fn main() {
         functions::copy_file(input, output);
     } else if choice == "m" || choice == "move"{
         functions::move_file(input, output);
-    } else if choice == "r" {
-        let result = functions::recursive_folder_check(input);
-            if let Err(error) = result {
-                eprintln!("Error: {}", error);
-            }
     }else if choice == "rc" {
         functions::recursive_copy(input, output);
     }else if choice == "rm" {
