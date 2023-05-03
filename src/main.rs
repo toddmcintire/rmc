@@ -1,16 +1,16 @@
 use clap::{Arg, Command};
-use std::fs;
+mod functions;
 
 fn main() {
     let matches = Command::new("rmc")
-        .version("1.0.0")
+        .version("1.1.0")
         .author("Todd McIntire <mail@toddmcintire.com>")
         .about("command line program to move and copy files")
         .arg(
             Arg::new("choice")
                 .short('c')
                 .long("choice")
-                .help("move or copy")
+                .help("m to move, c to copy, rc to recursively copy, rm to recursively move")
                 .num_args(1)
                 .required(true)
         )
@@ -39,22 +39,15 @@ fn main() {
             "choice {:?} input file {:?} output file {:?}", choice, input, output
     );
 
-    if choice == "c" {
-        match fs::copy(input,output) {
-            Ok(bytes) => println!("{} bytes copied", bytes),
-            Err(err) => println!("Error: {}", err),
-        }
-    } else if choice == "m" {
-        //copy file like above then delete file with fs::remove_file()
-        match fs::copy(input,output) {
-            Ok(bytes) => println!("{} bytes copied", bytes),
-            Err(err) => println!("Error: {}", err),
-        }
-        match fs::remove_file(input) {
-            Ok(()) => println!("original deleted"),
-            Err(err) => println!("Error: {}", err),
-        }
-    } else {
+    if choice == "c" || choice == "copy"{
+        functions::copy_file(input, output);
+    } else if choice == "m" || choice == "move"{
+        functions::move_file(input, output);
+    }else if choice == "rc" {
+        functions::recursive_copy(input, output);
+    }else if choice == "rm" {
+        functions::recursive_move(input, output);
+    }else {
         panic!("incorrect choice aborting")
     }
 
