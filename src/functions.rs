@@ -1,4 +1,4 @@
-use std::{fs::{self, OpenOptions, remove_dir_all}, path::PathBuf};
+use std::fs::{self, OpenOptions, remove_dir_all};
 
 /// creates folder from given input string
 /// 
