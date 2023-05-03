@@ -104,9 +104,7 @@ pub fn recursive_copy(input: &str, output: &str){
     if does_folder_exist(output) == false{
         if let Ok(_) = my_create_dir(output){
             //println!("dir created");
-        } else {
-            eprintln!("error creating dir");
-        }
+        } // cannot use else clause here, produces an infinite loop error in windows.
     }
 
     let input_path = std::path::Path::new(input);
@@ -122,8 +120,8 @@ pub fn recursive_copy(input: &str, output: &str){
                             let copy_output = output_path.join(item.path().file_name().unwrap());
                             if let Ok(_) = my_create_dir(copy_output.to_str().unwrap()) {
                                 //println!("dir created");
-                            } else {
-                                eprintln!("error creating dir");
+                            } else if let Err(error) = my_create_dir(copy_output.to_str().unwrap()) {
+                                eprintln!("error creating dir {}",error);
                             }
                             // recursively call on input folder
                             recursive_copy(item.path().to_str().unwrap(), copy_output.to_str().unwrap())
