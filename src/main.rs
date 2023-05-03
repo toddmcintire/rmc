@@ -10,7 +10,7 @@ fn main() {
             Arg::new("choice")
                 .short('c')
                 .long("choice")
-                .help("m or move to move file & c or copy to copy file")
+                .help("m to move, c to copy, rc to recursively copy")
                 .num_args(1)
                 .required(true)
         )

@@ -23,7 +23,7 @@ Arguments:
   <FILE>  file output
 
 Options:
-  -c, --choice <choice>  move or copy
+  -c, --choice <choice>  m, c, rc
   -h, --help             Print help
   -V, --version          Print version```
   
