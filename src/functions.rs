@@ -1,4 +1,4 @@
-use std::fs::{self, OpenOptions, remove_dir_all};
+use std::fs;
 
 /// creates folder from given input string
 /// 
@@ -32,7 +32,7 @@ pub fn my_create_dir(input: &str) -> std::io::Result<()>{
 /// does_folder_exist("test_dir");
 /// ```
 pub fn does_folder_exist(input: &str) -> bool{
-    let file = OpenOptions::new().read(true).open(input);
+    let file = fs::OpenOptions::new().read(true).open(input);
     //println!("{:?}",file);
     if let Err(..) = file {
         return false
@@ -157,7 +157,7 @@ pub fn recursive_copy(input: &str, output: &str){
 pub fn recursive_move(input: &str, output: &str){
     //calls 
     recursive_copy(input, output);
-    if let Ok(_) = remove_dir_all(input) {
+    if let Ok(_) = fs::remove_dir_all(input) {
         println!("original removed");
     } else {
         eprintln!("error in removing original");
