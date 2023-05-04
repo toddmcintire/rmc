@@ -76,7 +76,7 @@ pub fn move_file(input: &str, output: &str) {
 /// ```
 /// 
 /// This function copies a file from one location to another with all the original permissions.
-pub fn copy_file(input: &String, output: &String) {
+pub fn copy_file(input: &str, output: &str) {
     match fs::copy(input, output) {
         Ok(bytes) => println!("{} bytes copied", bytes),
             Err(err) => println!("Error: {}", err),
