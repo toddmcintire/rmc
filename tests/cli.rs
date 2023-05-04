@@ -39,3 +39,24 @@ fn copy_file_test() {
         Err(err) => println!("Error: {}", err),
     }
 }
+
+#[test]
+fn move_file_test() {
+    if let Ok(_) = fs::write("test.txt", "to be copied") {
+        println!("file created");
+    }
+    //copy_file("test.txt","test-copy.txt");
+
+    let mut cmd = Command::cargo_bin("rmc").unwrap();
+    //cmd.assert().success();
+    cmd
+        .arg("-c")
+        .arg("m")
+        .arg("test.txt")
+        .arg("test_moved.txt");
+
+    cmd.assert();
+
+    //check if test_moved.txt exists
+    //check if test.txt does not exits
+}
