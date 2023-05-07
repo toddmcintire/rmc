@@ -8,6 +8,8 @@ homepage = "https://github.com/toddmcintire/rmc"
 repository = "https://github.com/toddmcintire/rmc"
 keywords = ["cli", "copy", "move"]
 categories = ["command-line-utilities"]
+license = "MIT"
+
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
