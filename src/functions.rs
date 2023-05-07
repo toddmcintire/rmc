@@ -1,4 +1,4 @@
-use std::fs::{self, OpenOptions, remove_dir_all};
+use std::fs;
 
 /// creates folder from given input string
 /// 
@@ -32,7 +32,7 @@ pub fn my_create_dir(input: &str) -> std::io::Result<()>{
 /// does_folder_exist("test_dir");
 /// ```
 pub fn does_folder_exist(input: &str) -> bool{
-    let file = OpenOptions::new().read(true).open(input);
+    let file = fs::OpenOptions::new().read(true).open(input);
     //println!("{:?}",file);
     if let Err(..) = file {
         return false
@@ -54,12 +54,8 @@ pub fn does_folder_exist(input: &str) -> bool{
 /// ```
 /// 
 /// This function moves a file from one location to another with all the original permissions.
-pub fn move_file(input: &String, output: &String) {
-    //copy file like above then delete file with fs::remove_file()
-    match fs::copy(input, output) {
-        Ok(bytes) => println!("{} bytes copied", bytes),
-            Err(err) => println!("Error: {}", err),
-    }
+pub fn move_file(input: &str, output: &str) {
+    copy_file(input, output);
     match fs::remove_file(input) {
         Ok(()) => println!("original deleted"),
         Err(err) => println!("Error: {}", err),
@@ -80,7 +76,7 @@ pub fn move_file(input: &String, output: &String) {
 /// ```
 /// 
 /// This function copies a file from one location to another with all the original permissions.
-pub fn copy_file(input: &String, output: &String) {
+pub fn copy_file(input: &str, output: &str) {
     match fs::copy(input, output) {
         Ok(bytes) => println!("{} bytes copied", bytes),
             Err(err) => println!("Error: {}", err),
@@ -161,7 +157,7 @@ pub fn recursive_copy(input: &str, output: &str){
 pub fn recursive_move(input: &str, output: &str){
     //calls 
     recursive_copy(input, output);
-    if let Ok(_) = remove_dir_all(input) {
+    if let Ok(_) = fs::remove_dir_all(input) {
         println!("original removed");
     } else {
         eprintln!("error in removing original");
